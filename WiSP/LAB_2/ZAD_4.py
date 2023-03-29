@@ -1,14 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plot
 
-m = float(input("Please provide m: "))
+m = float(input("Please provide m0: "))
 
 t = np.linspace(0, 100000, 1000)
 T = 5730
+k = np.log2(1/2)/5730
 
-
-# oszacowac k (po x latach po prostu)
-y = m * np.exp(np.log(1/2) * (t / T))
+y = m * np.exp(k*t)
 
 _, ax = plot.subplots(figsize=(10, 5))
 
