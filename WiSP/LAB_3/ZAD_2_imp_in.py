@@ -1,25 +1,26 @@
 import numpy as np
 import matplotlib.pyplot as plot
-from scipy import signal
 
 h = float(input("Provide h: "))
-k = float(input("Provide k: "))
 
-n = np.linspace(0, 10, 10)
-dirac = signal.unit_impulse(int(h*1001),30)
-values = []
+k = 5
+n = np.linspace(0, 100, 101)
+T=0.1
+u = np.zeros(len(n))
+u[::10] = 1
+
 
 def x(n):
-  x1 = k
+  x1 = 0
   yield x1
-  x2 = k
+  x2 = 0
   yield x2
-  for i in n[:-2]:
+  for i in range(len(n)-2):
     temp = x2
-    x2 = h**2*k*dirac[int(i)] - (h**2-h+1)*x1-(h-2)*x2
-    print(x2)
+    x2 = 1/T*h**2 * k * u[int(i)] - (1/T*h-2)*x2 - (1/T*h**2 - 1/T*h + 1)*x1 
     x1 = temp
     yield x2
+
 
 _, ax = plot.subplots(figsize=(10, 5))
 

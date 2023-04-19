@@ -3,7 +3,10 @@ import matplotlib.pyplot as plot
 
 h = float(input("Provide h: "))
 
-n = np.linspace(0, 1000, 1000)
+n = np.linspace(0, 200, 200)
+
+K=1
+T=5
 
 u = np.zeros(len(n))
 u[len(n)//2:] = 1
@@ -11,8 +14,8 @@ u[len(n)//2:] = 1
 def x(n):
   x = 0
   yield x
-  for i in range(1,len(n)):
-    x = x + h * (-x + u[i - 1])
+  for i in range(len(n)-1):
+    x = (x + 1/T * (h * (-x + K * u[i])))
     yield x
 
 _, ax = plot.subplots(figsize=(10, 5))
