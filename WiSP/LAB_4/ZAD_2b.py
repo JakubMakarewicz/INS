@@ -2,36 +2,13 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 import numpy as np
 
+from Lib.pyramid import pyramid
+
 d = float(input("Please provide d: "))
 z = float(input("Please provide z: "))
-n = 3
-
-
-r = d / (2 * np.sin(d / 2))
-vertices = np.array([
-	(r, r, 0.),
-	(r * np.cos(120), r * np.sin(120), 0.),
-	(r * np.cos(240), r * np.sin(240), 0.),
-	(r, r+ d * np.sqrt(3)/2, z),
-])
-
-walls = [
-	((1,0,0),vertices[[0,1,2]]),
-	((0,1,0),vertices[[0,1,3]]),
-	((1,1,0),vertices[[1,3,2]]),
-	((1,0,1),vertices[[2,0,3]])
-]
-
-def draw_cube():
-	glBegin(GL_TRIANGLES)
-	for wall in walls:
-		glColor3f(*wall[0])
-		for i in range(3):
-			glVertex3f(*wall[1][i])
-
-	glEnd()
 
 def show():
+	glClearColor(0, 0, 0, 1)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	glViewport(0, 0, 640, 480)
 	glMatrixMode(GL_PROJECTION)
@@ -44,12 +21,12 @@ def show():
 	glLoadIdentity()
 	glPushMatrix()
 	glTranslate(2, 2, -3)
-	draw_cube()
+	pyramid(0,0,0,d,z).draw((1,1,0))
 	glPopMatrix()
 	glTranslate(-1 ,2, -3)
-	draw_cube()
+	pyramid(0,0,0,d,z).draw((1,1,0))
 	glTranslate(-3 ,2, -3)
-	draw_cube()
+	pyramid(0,0,0,d,z).draw((1,1,0))
 	glutSwapBuffers()
 
 glutInit()

@@ -2,44 +2,15 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 import numpy as np
 
+from Lib.cone import cone
+
 h = float(input("Please provide h: "))
 r = float(input("Please provide r: "))
 
 n=30 # circle approximation
 
-def draw_circle(z):
-	glBegin(GL_TRIANGLE_FAN)
-	angleIncrement = 360. / n
-	angleIncrement *= np.pi / 180.
-
-	angle = 0.
-
-	for _ in range(n):
-		glVertex3f(r * np.cos(angle), r * np.sin(angle), z)
-		angle += angleIncrement
-	glEnd()
-
-def draw_side():
-	angleIncrement = 360. / n
-	angleIncrement *= np.pi / 180.
-
-	angle = 0.
-
-	for _ in range(n):
-		glBegin(GL_TRIANGLES)
-		glVertex3f(r * np.cos(angle), r * np.sin(angle), 0)
-		angle += angleIncrement
-		glVertex3f(r * np.cos(angle), r * np.sin(angle), 0)
-		glVertex3f(0, 0, h)
-		glEnd()
-
-def draw_cilinder():
-	glColor3f(1,0,0)
-	draw_circle(0)
-	glColor3f(0,0,1)
-	draw_side()
-
 def show():
+	glClearColor(0, 0, 0, 1)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	glViewport(0, 0, 640, 480)
 	glMatrixMode(GL_PROJECTION)
@@ -52,10 +23,10 @@ def show():
 	glLoadIdentity()
 	glPushMatrix()
 	glTranslate(2, 2, -3)
-	draw_cilinder()
+	cone(0,0,0,r,h,n).draw((1,1,0))
 	glPopMatrix()
 	glTranslate(-1 ,2, -3)
-	draw_cilinder()
+	cone(0,0,0,r,h,n).draw((1,1,0))
 	glutSwapBuffers()
 
 glutInit()

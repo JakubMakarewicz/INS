@@ -2,41 +2,16 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 import numpy as np
 
+from Lib.cube import cube
 
 a = int(input("a: "))
 b = int(input("b: "))
 c = int(input("c: "))
-vertices = np.array([
-	(0,0,0), 
-	(a,0,0),
-	(a,b,0),
-	(0,b,0),
-	(0,0,c), 
-	(a,0,c),
-	(a,b,c),
-	(0,b,c)	
-])
-
-walls = [
-	((1,0,0),vertices[[0,1,2,3]]),
-	((0,1,0),vertices[[1,5,6,2]]),
-	((1,1,0),vertices[[2,6,7,3]]),
-	((0,1,1),vertices[[0,4,7,3]]),
-	((0,0,1),vertices[[0,1,5,4]]),
-	((1,0,1),vertices[[4,5,6,7]])
-]
-
-def draw_cube():
-	glBegin(GL_QUADS)
-	for wall in walls:
-		glColor3f(*wall[0])
-		for i in range(4):
-			glVertex3f(*wall[1][i])
-
-	glEnd()
 
 def show():
+	glClearColor(0, 0, 0, 1)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
 	glViewport(0, 0, 640, 480)
 	glMatrixMode(GL_PROJECTION)
 	glLoadIdentity()
@@ -48,20 +23,19 @@ def show():
 	glLoadIdentity()
 	glPushMatrix()
 	glTranslate(2, 2, -3)
-	draw_cube()
+	cube(0,0,0,a,b,c,).draw((1,1,0))
 	glPopMatrix()
 	glTranslate(-1 ,2, -3)
-	draw_cube()
+	cube(0,0,0,a,b,c,).draw((1,1,0))
 	glTranslate(-3 ,2, -3)
-	draw_cube()
+	cube(0,0,0,a,b,c,).draw((1,1,0))
 	glutSwapBuffers()
 
 glutInit()
 glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
 glutInitWindowSize(640, 640)
 glutInitWindowPosition(100, 100)
-glutCreateWindow("Program 05a")
-# glutCreateWindow("Program 05b")
+glutCreateWindow("Program 2a")
 glClearColor(1.0, 1.0, 1.0, 1.0)
 glEnable(GL_DEPTH_TEST)
 glDepthFunc(GL_LESS)
