@@ -2,8 +2,8 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 import numpy as np
 
-n = int(input("Please provide n: "))
 a = float(input("Please provide a: "))
+n = int(input("Please provide n: "))
 
 
 def show():
@@ -31,4 +31,3 @@ glutCreateWindow("Program 02")
 glClearColor(1.0, 1.0, 1.0, 1.0)
 glutDisplayFunc(show)
 glutMainLoop()
-
