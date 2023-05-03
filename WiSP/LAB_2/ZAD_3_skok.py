@@ -17,5 +17,4 @@ ax.plot(t, y)
 ax.legend()
 ax.set_xlabel('time')
 ax.set_ylabel('???')
-
 plot.show()
