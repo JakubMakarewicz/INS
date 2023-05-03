@@ -7,21 +7,21 @@ n = int(input("Please provide n: "))
 
 
 def show():
-	angleIncrement = 360. / n
-	angleIncrement *= np.pi / 180.
-	glBegin(GL_TRIANGLE_FAN)
+  angleIncrement = 360. / n
+  angleIncrement *= np.pi / 180.
+  glBegin(GL_TRIANGLE_FAN)
 
-	angle = 0.
+  angle = 0.
 
-	#(s / 2) / r = sin(a / 2)
-	#s / 2 = r * sin(a / 2)
-	r = a / (2 * np.sin(a / 2))
+  #(s / 2) / r = sin(a / 2)
+  #s / 2 = r * sin(a / 2)
+  r = a / (2 * np.sin(a / 2))
 
-	for _ in range(n):
-		glVertex3f(r * np.cos(angle), r * np.sin(angle), 0.)
-		angle += angleIncrement
-	glEnd()
-	glutSwapBuffers()
+  for _ in range(n):
+    glVertex3f(r * np.cos(angle), r * np.sin(angle), 0.)
+    angle += angleIncrement
+  glEnd()
+  glutSwapBuffers()
 
 glutInit()
 glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE)

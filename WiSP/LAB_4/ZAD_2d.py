@@ -10,24 +10,24 @@ r = float(input("Please provide r: "))
 n=30 # circle approximation
 
 def show():
-	glClearColor(0, 0, 0, 1)
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-	glViewport(0, 0, 640, 480)
-	glMatrixMode(GL_PROJECTION)
-	glLoadIdentity()
-	# Program 05a
-	glFrustum(-2, 2, -2, 2, 1, 10)
-	# Program 05b
-	#glOrtho(-2, 2, -2, 2, 1, 10)
-	glMatrixMode(GL_MODELVIEW)
-	glLoadIdentity()
-	glPushMatrix()
-	glTranslate(2, 2, -3)
-	cone(0,0,0,r,h,n).draw((1,1,0))
-	glPopMatrix()
-	glTranslate(-1 ,2, -3)
-	cone(0,0,0,r,h,n).draw((1,1,0))
-	glutSwapBuffers()
+  glClearColor(0, 0, 0, 1)
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+  glViewport(0, 0, 640, 480)
+  glMatrixMode(GL_PROJECTION)
+  glLoadIdentity()
+  # Program 05a
+  glFrustum(-2, 2, -2, 2, 1, 10)
+  # Program 05b
+  #glOrtho(-2, 2, -2, 2, 1, 10)
+  glMatrixMode(GL_MODELVIEW)
+  glLoadIdentity()
+  glPushMatrix()
+  glTranslate(2, 2, -3)
+  cone(0,0,0,r,h,n).draw((1,1,0))
+  glPopMatrix()
+  glTranslate(-1 ,2, -3)
+  cone(0,0,0,r,h,n).draw((1,1,0))
+  glutSwapBuffers()
 
 glutInit()
 glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE)
