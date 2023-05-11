@@ -1,14 +1,14 @@
 import pygame as pg
 import sys
-from pygame.locals import *
+import glfw
 
+from pygame.locals import *
 from OpenGL.GL import *
-from OpenGL.GLU import *
 
 from Lib.cylinder import cylinder
+from Lib.pyramid import pyramid
 from Lib.cube import cube
 from Lib.cone import cone
-from Lib.pyramid import pyramid
 
 def running_loop(clock):
   running = True
@@ -49,7 +49,9 @@ display = (1920,1080)
 pg.init()
 pg.display.set_mode(display, DOUBLEBUF|OPENGL)
 
-gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
+glfw.windom
+
+
 glEnable(GL_DEPTH_TEST)
 glTranslatef(0.0, 0.0, -5)
 

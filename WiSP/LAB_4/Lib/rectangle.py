@@ -1,25 +1,22 @@
 from OpenGL.GLUT import *
 from OpenGL.GL import *
+from Lib.base import base
 
-from Lib.line import line
+class rectangle(base):
+  
+  def __init__(self,a,b,c,d, color):
+    super().__init__([a,b,d,b,d,c], color)
 
-class rectangle:
-  vertices = []
-
-  def __init__(self,x,y,z,a,b):      
-    self.vertices = [
-      (x,y,z), 
-      (x+a,y,z),
-      (x+a,y+b,z),
-      (x,y+b,z),
-    ]
-
-  def __init__(self, v1,v2,v3,v4):
-    self.vertices = [v1,v2,v3,v4]
-
-  def draw(self, color):
-    glColor3f(*color)
-    glBegin(GL_QUADS)
-    for i in range(4):
-      glVertex3f(*self.vertices[i])
-    glEnd()
+  def _draw(self):
+    glEnableVertexAttribArray(0)
+    glBindBuffer(GL_ARRAY_BUFFER, self.vertex_buffer)
+    glVertexAttribPointer(
+      0,        
+      3,        
+      GL_FLOAT, 
+      GL_FALSE, 
+      self.vertices.strides[0],        
+      ctypes.c_void_p(0)  
+    )
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 6)
+    glDisableVertexAttribArray(0)
