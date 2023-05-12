@@ -4,7 +4,7 @@ from Lib.base import base
 
 class line(base):
 
-  def __init__(self, color, *vertices):      
+  def __init__(self, vertices, color):      
     super().__init__(vertices, color)
 
   def _draw(self):
@@ -12,11 +12,11 @@ class line(base):
     glBindBuffer(GL_ARRAY_BUFFER, self.vertex_buffer)
     glVertexAttribPointer(
       0,        
-      2,        
+      3,        
       GL_FLOAT, 
       GL_FALSE, 
       self.vertices.strides[0],        
       ctypes.c_void_p(0)  
     )
-    glDrawArrays(GL_LINE_LOOP, 0, len(self.vertices))
+    glDrawArrays(GL_LINES, 0, len(self.vertices))
     glDisableVertexAttribArray(0)

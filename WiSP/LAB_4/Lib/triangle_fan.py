@@ -2,10 +2,10 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 from Lib.base import base
 
-class triangle(base):
+class triangle_fan(base):
   
-  def __init__(self,a,b,c, color):      
-    super().__init__([a,b,c], color)
+  def __init__(self, vertices, color): 
+    super().__init__(vertices, color)
 
   def _draw(self):
     glEnableVertexAttribArray(0)
@@ -18,5 +18,5 @@ class triangle(base):
       self.vertices.strides[0],        
       ctypes.c_void_p(0)  
     )
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 3)
+    glDrawArrays(GL_TRIANGLE_FAN, 0, self.vertices.size)
     glDisableVertexAttribArray(0)

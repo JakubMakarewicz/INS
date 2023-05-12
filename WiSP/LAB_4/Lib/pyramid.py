@@ -6,11 +6,11 @@ from Lib.triangle import triangle
 from Lib.line import line
 
 class pyramid:
-  vertices, walls = [],[] 
+  walls, line = [], None 
 
-  def __init__(self,x,y,z,a,h):      
+  def __init__(self,x,y,z,a,h, color): 
     r = a / (2 * np.sin(a / 2))
-    self.vertices = np.array([
+    vertices = np.array([
       (x+r, y+r, z+0.),
       ((x+r) * np.cos(120), (y+r) * np.sin(120), z+0.),
       ((x+r) * np.cos(240), (y+r) * np.sin(240), z+0.),
@@ -18,14 +18,15 @@ class pyramid:
     ])
 
     self.walls = [
-      self.vertices[[0,1,2]],
-      self.vertices[[0,1,3]],
-      self.vertices[[1,3,2]],
-      self.vertices[[2,0,3]]
+      triangle(*vertices[[0,1,2]], color),
+      triangle(*vertices[[0,1,3]], color),
+      triangle(*vertices[[1,3,2]], color),
+      triangle(*vertices[[2,0,3]], color)
     ]
 
-  def draw(self, color):
+    self.line = line(vertices[[0,1,2,0,3,2,1,3]], color=(1,1,1))
+
+  def draw(self):
     for wall in self.walls:
-      line(*wall).draw((1,1,1))
-    for wall in self.walls:
-      triangle(*wall).draw(color)
+      wall.draw()
+    self.line.draw()

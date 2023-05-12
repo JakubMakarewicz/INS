@@ -2,44 +2,23 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 import numpy as np
 
-from Lib.rectangle import rectangle
+from Lib.triangle_strip import triangle_strip
 from Lib.circle import circle
+from Lib.line import line
 
 class cylinder:
-  x,y,z,r,h,approximation=0,0,0,0,0,0
-  # walls = []
-  top_vertices = []
-  bottom_vertices = []
-  def __init__(self,x,y,z,r,h, approximation=40):      
-    self.x=x
-    self.y=y
-    self.z=z
-    self.r=r
-    self.h=h
-    self.approximation=approximation
-    
-    angleIncrement = 360. / approximation
-    angleIncrement *= np.pi / 180.
+  wall, base, top, line_base, line_top  = None, None, None, None, None
 
-    angle = 0.
-
-    for _ in range(approximation):
-      self.bottom_vertices.append(((x+r) * np.cos(angle), (y+r) * np.sin(angle), z+0))
-      self.top_vertices.append(((x+r) * np.cos(angle), (y+r) * np.sin(angle), z+h))
-      # self.walls.append((
-      #   ((x+r) * np.cos(angle), (y+r) * np.sin(angle), z+0),
-      #   ((x+r) * np.cos(angle), (y+r) * np.sin(angle), z+h),
-      #   ((x+r) * np.cos(angle+angleIncrement), (y+r) * np.sin(angle+angleIncrement), z+h),
-      #   ((x+r) * np.cos(angle+angleIncrement), (y+r) * np.sin(angle+angleIncrement), z+0)))
-      angle+=angleIncrement
-
-  def draw(self, color):
-    circle.draw_explicit(self.top_vertices, color, True)
-    circle.draw_explicit(self.bottom_vertices, color, True)
-    glColor3f(*color)
-    glBegin(GL_TRIANGLE_STRIP)
-    for v,v2 in zip(self.top_vertices,self.bottom_vertices):
-      glVertex3f(*v)
-      glVertex3f(*v2)
-    glVertex3f(*self.top_vertices[0])
-    glEnd()
+  def __init__(self,x,y,z,r,h, color, approximation=40):
+    self.base = circle(x,y,z,r,color, approximation)
+    self.top  = circle(x,y,z+h,r,color,approximation)
+    self.line_base = line(self.base.fan.vertices, (1,1,1))
+    self.line_top = line(self.top.fan.vertices, (1,1,1))
+    self.wall = triangle_strip(np.array([(_a,_b) for _a,_b in zip(self.base.fan.vertices, self.top.fan.vertices)]).reshape(2*approximation, 3), color)
+  
+  def draw(self):
+    self.base.draw()
+    self.top.draw()
+    self.wall.draw()
+    self.line_base.draw()
+    self.line_top.draw()

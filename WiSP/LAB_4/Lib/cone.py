@@ -2,35 +2,19 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 import numpy as np
 
-from Lib.triangle import triangle
+from Lib.triangle_fan import triangle_fan
 from Lib.circle import circle
+from Lib.line import line
 
 class cone:
-  x,y,z,r,h,approximation=0,0,0,0,0,0
-  vertices = []
+  wall, base, line = None, None, None
 
-  def __init__(self,x,y,z,r,h, approximation=40): 
-    self.x=x
-    self.y=y
-    self.z=z
-    self.r=r
-    self.h=h
-    self.approximation=approximation
-    
-    angleIncrement = 360. / approximation
-    angleIncrement *= np.pi / 180.
+  def __init__(self,x,y,z,r,h, color, approximation=40): 
+    self.base = circle(x,y,z,r,color,approximation)
+    self.wall = triangle_fan(np.concatenate(([(x,y,z+h)], self.base.fan.vertices)), color)
+    self.line = line(self.base.fan.vertices, (1,1,1))
 
-    angle = 0.
-
-    for _ in range(approximation):
-      self.vertices.append(((x+r) * np.cos(angle), (y+r) * np.sin(angle), z+0))
-      angle+=angleIncrement
-
-  def draw(self, color):
-    circle.draw_explicit(vertices=self.vertices,color=color, draw_lines=True)
-    glColor3f(*color)
-    glBegin(GL_TRIANGLE_FAN)
-    glVertex3f(self.x,self.y,self.z+self.h)
-    for v in self.vertices:
-      glVertex3f(*v)
-    glEnd()
+  def draw(self):
+    self.wall.draw()
+    self.base.draw()
+    self.line.draw()

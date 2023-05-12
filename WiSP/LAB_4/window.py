@@ -1,10 +1,11 @@
 import OpenGL.GL as gl
 import glfw
-import ctypes
-import numpy as np
 import sys
 from shader import *
-from Lib.rectangle import rectangle
+
+from Lib.cone import cone
+from Lib.cylinder import cylinder
+from Lib.pyramid import pyramid
 from Lib.cube import cube
 
 class Window_glfw:
@@ -83,7 +84,11 @@ class Window_glfw:
       gl.glEnable(gl.GL_DEPTH_TEST)
       gl.glDepthFunc(gl.GL_LESS)
 
-      _rectangle = cube(-.4,-.4,0,1,1,1, (0,1,0))
+      # fig = cube(-.4,-.4,0,1,1,1, (0,0,1))
+      # fig = cone(-.4,-.4,0,1,1, (0,0,1))
+      fig = cylinder(-.4,-.4,0,1,1, (0,0,1))
+      # fig = pyramid(-.4,-.4,0,1,1, (0,0,1))
+      
       self._prepareShaders(vsc, fsc)
 
       while not glfw.window_should_close(self.window):       
@@ -92,7 +97,7 @@ class Window_glfw:
 
          # draw
          gl.glUseProgram(self.glProgramId)
-         _rectangle.draw()
+         fig.draw()
          # end draw
 
          glfw.swap_buffers(self.window)
