@@ -6,7 +6,7 @@ from Lib.triangle import triangle
 from Lib.line import line
 
 class pyramid:
-  walls, line = [], None 
+  walls = [] 
 
   def __init__(self,x,y,z,a,h, color): 
     r = a / (2 * np.sin(a / 2))
@@ -24,9 +24,6 @@ class pyramid:
       triangle(*vertices[[2,0,3]], color)
     ]
 
-    self.line = line(vertices[[0,1,2,0,3,2,1,3]], color=(1,1,1))
-
   def draw(self):
     for wall in self.walls:
       wall.draw()
-    self.line.draw()

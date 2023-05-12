@@ -1,11 +1,11 @@
 from OpenGL.GLUT import *
 from OpenGL.GL import *
-from Lib.base import base
+from Lib.fig_base import fig_base
 
-class triangle(base):
+class triangle(fig_base):
   
-  def __init__(self,a,b,c, color):      
-    super().__init__([a,b,c], color)
+  def __init__(self,a,b,c, color, draw_line=True):      
+    super().__init__([a,b,c], color, self.vertices, draw_line)
 
   def _draw(self):
     glEnableVertexAttribArray(0)

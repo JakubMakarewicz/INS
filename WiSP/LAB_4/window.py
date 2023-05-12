@@ -86,8 +86,8 @@ class Window_glfw:
 
       # fig = cube(-.4,-.4,0,1,1,1, (0,0,1))
       # fig = cone(-.4,-.4,0,1,1, (0,0,1))
-      fig = cylinder(-.4,-.4,0,1,1, (0,0,1))
-      # fig = pyramid(-.4,-.4,0,1,1, (0,0,1))
+      # fig = cylinder(-.4,-.4,0,1,1, (0,0,1))
+      fig = pyramid(-.4,-.4,0,0.2,0.2, (0,0,1))
       
       self._prepareShaders(vsc, fsc)
 

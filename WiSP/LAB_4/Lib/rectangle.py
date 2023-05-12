@@ -1,11 +1,12 @@
 from OpenGL.GLUT import *
 from OpenGL.GL import *
-from Lib.base import base
+from Lib.fig_base import fig_base
+from Lib.line import line
 
-class rectangle(base):
-  
-  def __init__(self,a,b,c,d, color):
-    super().__init__([a,b,d,b,d,c], color)
+class rectangle(fig_base):
+   
+  def __init__(self,a,b,c,d, color, draw_line=True):
+    super().__init__([a,b,d,b,d,c], color, line.linify([a,b,c,d]), draw_line)
 
   def _draw(self):
     glEnableVertexAttribArray(0)

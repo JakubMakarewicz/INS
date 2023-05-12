@@ -6,7 +6,7 @@ from Lib.rectangle import rectangle
 from Lib.line import line
 
 class cube:
-  walls, line = [], None 
+  walls = [] 
 
   def __init__(self,x,y,z,a,b,c, color):
     vertices = np.array([
@@ -29,9 +29,6 @@ class cube:
       rectangle(*vertices[[4,5,6,7]], color)
     ]
 
-    self.line = line(vertices[[0,1,5,6,2,3,7,4,0,3,7,6,2,1,5,4]], color = (1,1,1))
-
   def draw(self):
     for wall in self.walls:
       wall.draw()
-    self.line.draw()

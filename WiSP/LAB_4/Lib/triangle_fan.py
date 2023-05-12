@@ -1,12 +1,12 @@
 from OpenGL.GLUT import *
 from OpenGL.GL import *
-from Lib.base import base
+from Lib.fig_base import fig_base
 
-class triangle_fan(base):
+class triangle_fan(fig_base):
   
-  def __init__(self, vertices, color): 
-    super().__init__(vertices, color)
-
+  def __init__(self, vertices, color, line_vertices = [], draw_line=True): 
+    super().__init__(vertices, color, line_vertices, draw_line)
+    
   def _draw(self):
     glEnableVertexAttribArray(0)
     glBindBuffer(GL_ARRAY_BUFFER, self.vertex_buffer)
