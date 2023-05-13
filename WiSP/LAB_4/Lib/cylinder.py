@@ -18,6 +18,6 @@ class cylinder:
       draw_line = False)
   
   def draw(self):
+    self.wall.draw()
     self.base.draw()
     self.top.draw()
-    self.wall.draw()

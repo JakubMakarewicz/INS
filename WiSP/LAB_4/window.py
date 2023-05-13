@@ -52,6 +52,8 @@ class Window_glfw:
       glfw.window_hint(glfw.SAMPLES, 8)
       glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 4)
       glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 6)
+      gl.glEnable(gl.GL_DEPTH_TEST)
+      gl.glDepthFunc(gl.GL_LESS)
       glfw.swap_interval(1)
 
    def _prepareShaders(self, vertexShaderCode, fragmentShaderCode):
@@ -118,13 +120,11 @@ class Window_glfw:
 
    def run_main_loop(self):
       self._setup_draw()
-      gl.glEnable(gl.GL_DEPTH_TEST)
-      gl.glDepthFunc(gl.GL_LESS)
 
       # fig = cube(-.4,-.4,0,1,1,1, (0,0,1)) # fix lines
       # fig = cone(-.4,-.4,0,1,1, (0,0,1)) # this one works
-      fig = cylinder(-.4,-.4,0,1,1, (0,0,1)) # this doesnt draw the wall
-      # fig = pyramid(-.4,-.4,0,0.2,0.2, (0,0,1)) # hmmmm
+      # fig = cylinder(-.4,-.4,0,1,1, (0,0,1)) # this doesnt draw the top line
+      fig = pyramid(-.4,-.4,0,0.2,0.2, (0,0,1)) # hmmmm
       
       self._prepareShaders(vsc, fsc)
 
