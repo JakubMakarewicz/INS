@@ -13,7 +13,7 @@ class circle:
     angle = 0.
     vertices = []
 
-    for _ in range(approximation):
+    for _ in range(approximation+1):
       vertices.append((x+r * np.cos(angle), y+r * np.sin(angle), z))
       angle += angleIncrement
 

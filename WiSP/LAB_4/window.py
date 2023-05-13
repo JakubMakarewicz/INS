@@ -1,12 +1,23 @@
 import OpenGL.GL as gl
 import glfw
 import sys
-from shader import *
+import numpy as np
 
+from shader import *
+import vectorOperations as vo
 from Lib.cone import cone
 from Lib.cylinder import cylinder
 from Lib.pyramid import pyramid
 from Lib.cube import cube
+
+class WindowState:
+    def __init__(self):
+        self.currentRotationType = vo.Rotation.OX
+        self.currentPosition = [0., 0., 0.]
+        self.currentRotation = [0., 0., 0.]
+        self.currentColor = [1., 1., 1.]
+        self.circleQuality = 20
+        self.rotationQuality = 100
 
 class Window_glfw:
    
@@ -24,6 +35,7 @@ class Window_glfw:
       self.fragmentShaderId = 0
       self.vertexes = []
       self.glProgramId = None
+      self.state = WindowState()
 
    def setup_window(self) -> None:
       if not glfw.init():
@@ -37,7 +49,7 @@ class Window_glfw:
       glfw.make_context_current(self.window)
       glfw.set_key_callback(self.window, self._key_callback)
 
-      glfw.window_hint(glfw.SAMPLES, 4)
+      glfw.window_hint(glfw.SAMPLES, 8)
       glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 4)
       glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 6)
       glfw.swap_interval(1)
@@ -66,6 +78,10 @@ class Window_glfw:
 
       gl.glDeleteShader(self.vertexShaderId)
       gl.glDeleteShader(self.fragmentShaderId)
+      
+      gl.glUseProgram(self.glProgramId)
+      self.matrixLocationId = gl.glGetUniformLocation(self.glProgramId, "position")
+      self.rotationLocationId = gl.glGetUniformLocation(self.glProgramId, "rotation")
 
    def _setup_draw(self):
       self.vao = gl.glGenVertexArrays(1)
@@ -74,20 +90,41 @@ class Window_glfw:
    def _key_callback(self, window, key: int, scancode: int, action: int, mods: int):
       if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
          glfw.set_window_should_close(self.window, glfw.TRUE)
+      elif key == glfw.KEY_A:
+         self.state.currentPosition = [self.state.currentPosition[0] - 0.1, self.state.currentPosition[1], self.state.currentPosition[2]]
+      elif key == glfw.KEY_D:
+         self.state.currentPosition = [self.state.currentPosition[0] + 0.1, self.state.currentPosition[1], self.state.currentPosition[2]]
+      elif key == glfw.KEY_S:
+         self.state.currentPosition = [self.state.currentPosition[0], self.state.currentPosition[1] - 0.1, self.state.currentPosition[2]]
+      elif key == glfw.KEY_W:
+         self.state.currentPosition = [self.state.currentPosition[0], self.state.currentPosition[1] + 0.1, self.state.currentPosition[2]]
+      elif key == glfw.KEY_Q:
+         self.state.currentPosition = [self.state.currentPosition[0], self.state.currentPosition[1], self.state.currentPosition[2] - 0.1]
+      elif key == glfw.KEY_E:
+         self.state.currentPosition = [self.state.currentPosition[0], self.state.currentPosition[1], self.state.currentPosition[2] + 0.1]
 
-   def _key_callback(self, window, key: int, scancode: int, action: int, mods: int):
-      if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
-         glfw.set_window_should_close(self.window, glfw.TRUE)
+      elif key == glfw.KEY_K:
+         self.state.currentRotation = [self.state.currentRotation[0] - np.pi/self.state.rotationQuality, self.state.currentRotation[1], self.state.currentRotation[2]]
+      elif key == glfw.KEY_I:
+         self.state.currentRotation = [self.state.currentRotation[0] + np.pi/self.state.rotationQuality, self.state.currentRotation[1], self.state.currentRotation[2]]
+      elif key == glfw.KEY_L:
+         self.state.currentRotation = [self.state.currentRotation[0], self.state.currentRotation[1] - np.pi/self.state.rotationQuality, self.state.currentRotation[2]]
+      elif key == glfw.KEY_J:
+         self.state.currentRotation = [self.state.currentRotation[0], self.state.currentRotation[1] + np.pi/self.state.rotationQuality, self.state.currentRotation[2]]
+      elif key == glfw.KEY_U:
+         self.state.currentRotation = [self.state.currentRotation[0], self.state.currentRotation[1], self.state.currentRotation[2] - np.pi/self.state.rotationQuality]
+      elif key == glfw.KEY_O:
+         self.state.currentRotation = [self.state.currentRotation[0], self.state.currentRotation[1], self.state.currentRotation[2] + np.pi/self.state.rotationQuality]
 
    def run_main_loop(self):
       self._setup_draw()
       gl.glEnable(gl.GL_DEPTH_TEST)
       gl.glDepthFunc(gl.GL_LESS)
 
-      # fig = cube(-.4,-.4,0,1,1,1, (0,0,1))
-      # fig = cone(-.4,-.4,0,1,1, (0,0,1))
-      # fig = cylinder(-.4,-.4,0,1,1, (0,0,1))
-      fig = pyramid(-.4,-.4,0,0.2,0.2, (0,0,1))
+      # fig = cube(-.4,-.4,0,1,1,1, (0,0,1)) # fix lines
+      # fig = cone(-.4,-.4,0,1,1, (0,0,1)) # this one works
+      fig = cylinder(-.4,-.4,0,1,1, (0,0,1)) # this doesnt draw the wall
+      # fig = pyramid(-.4,-.4,0,0.2,0.2, (0,0,1)) # hmmmm
       
       self._prepareShaders(vsc, fsc)
 
@@ -97,6 +134,9 @@ class Window_glfw:
 
          # draw
          gl.glUseProgram(self.glProgramId)
+         gl.glUniformMatrix4fv(self.matrixLocationId, 1, gl.GL_FALSE, vo.createPositionMatrix(self.state.currentPosition))
+         gl.glUniform3f(self.rotationLocationId, *self.state.currentRotation)
+ 
          fig.draw()
          # end draw
 

@@ -12,7 +12,7 @@ class triangle_strip(fig_base):
     glBindBuffer(GL_ARRAY_BUFFER, self.vertex_buffer)
     glVertexAttribPointer(
       0,        
-      3,        
+      2,        
       GL_FLOAT, 
       GL_FALSE, 
       self.vertices.strides[0],        
