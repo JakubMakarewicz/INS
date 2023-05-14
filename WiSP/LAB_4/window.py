@@ -10,6 +10,7 @@ from Lib.cylinder import cylinder
 from Lib.pyramid import pyramid
 from Lib.cube import cube
 from Lib.sphere import sphere
+from Lib.regular_fig import regular_fig
 
 class WindowState:
     def __init__(self):
@@ -22,7 +23,7 @@ class WindowState:
 
 class Window_glfw:
    
-   def __init__(self, width = 720, height = 480, title = "GLFW Window", monitor = None, share = None) -> None:
+   def __init__(self, width = 720, height = 720, title = "GLFW Window", monitor = None, share = None) -> None:
       self.window = None
       self.width = width
       self.height = height
@@ -126,8 +127,9 @@ class Window_glfw:
       # fig = cone(-.4,-.4,0,1,1, (0,0,1)) # this one works
       # fig = cylinder(-.4,-.4,0,1,1, (0,0,1)) # this doesnt draw the top line
       #fig = pyramid(-.4,-.4,0,0.2,0.2, (0,0,1)) # hmmmm
-      fig = sphere(0,0,0,1,2,40,(0,0,1)) # for some reason only the first line gets drawn
-      
+      # fig = sphere(0,0,0,1,2,40,(0,0,1)) # for some reason only the first line gets drawn
+      fig = regular_fig(1,6,(0,0,1)) 
+
       self._prepareShaders(vsc, fsc)
 
       while not glfw.window_should_close(self.window):       

@@ -9,6 +9,8 @@ class fig_base(base):
   def __init__(self, vertices, color, line_vertices = [], draw_line=True):
     super().__init__(vertices, color)
     if draw_line:
+        print("heyo")
+        print(vertices)
         self.line = line(line_vertices if line_vertices != [] else line.linify(self.vertices))
 
   def draw(self):
