@@ -9,6 +9,7 @@ from Lib.cone import cone
 from Lib.cylinder import cylinder
 from Lib.pyramid import pyramid
 from Lib.cube import cube
+from Lib.sphere import sphere
 
 class WindowState:
     def __init__(self):
@@ -124,7 +125,8 @@ class Window_glfw:
       # fig = cube(-.4,-.4,0,1,1,1, (0,0,1)) # fix lines
       # fig = cone(-.4,-.4,0,1,1, (0,0,1)) # this one works
       # fig = cylinder(-.4,-.4,0,1,1, (0,0,1)) # this doesnt draw the top line
-      fig = pyramid(-.4,-.4,0,0.2,0.2, (0,0,1)) # hmmmm
+      #fig = pyramid(-.4,-.4,0,0.2,0.2, (0,0,1)) # hmmmm
+      fig = sphere(0,0,0,1,2,40,(0,0,1)) # for some reason only the first line gets drawn
       
       self._prepareShaders(vsc, fsc)
 

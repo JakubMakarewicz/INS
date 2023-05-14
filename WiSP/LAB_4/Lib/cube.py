@@ -3,7 +3,6 @@ from OpenGL.GL import *
 import numpy as np
 
 from Lib.rectangle import rectangle
-from Lib.line import line
 
 class cube:
   walls = [] 
