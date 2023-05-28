@@ -38,7 +38,8 @@ class Window_glfw:
       self.vertexes = []
       self.glProgramId = None
       self.state = WindowState()
-
+      self.figs = []
+      
    def setup_window(self) -> None:
       if not glfw.init():
          exit(-1)
@@ -120,39 +121,29 @@ class Window_glfw:
       elif key == glfw.KEY_O:
          self.state.currentRotation = [self.state.currentRotation[0], self.state.currentRotation[1], self.state.currentRotation[2] + np.pi/self.state.rotationQuality]
 
-      elif key == glfw.KEY_KP_SUBTRACT:
-         self.vert_approx = max(0, self.vert_approx-1)
-         self.hor_approx = max(3, self.hor_approx-1)
-         self.figs[4]= sphere(0,0,0,1,self.vert_approx, self.hor_approx, (0,0,1))
-         self.figs[5] = regular_fig(1,self.hor_approx,(0,0,1))
-      elif key == glfw.KEY_KP_ADD:
-         self.vert_approx = min(100, self.vert_approx+1)
-         self.hor_approx = min(100, self.hor_approx+1)
-         self.figs[4] = sphere(0,0,0,1,self.vert_approx, self.hor_approx, (0,0,1))
-         self.figs[5] = regular_fig(1,self.hor_approx,(0,0,1))
+      elif key == glfw.KEY_V:
+         self.load_fig("",0.4,0.4,0.4)
+      elif key == glfw.KEY_B:
+         self.delete_fig(len(self.figs)-1)   
 
       elif key in [glfw.KEY_0, glfw.KEY_1, glfw.KEY_2, glfw.KEY_3, glfw.KEY_4, glfw.KEY_5] :
-         n = 0 if key == glfw.KEY_0 else 1 if key == glfw.KEY_1 else 2 if key == glfw.KEY_2 else 3 if key == glfw.KEY_3 else 4 if key==glfw.KEY_4 else 5
-         self.fig = self.figs[n]
+         self.load_camera([0,1][key == glfw.KEY_0])
+
+   def load_fig(self,filename, x,y,z):
+      self.figs.append(cube(x,y,z,1,1,1, (0,0,1)))
+
+   def delete_fig(self,idx):
+      if idx >= 0 and idx < len(self.figs):
+         del self.figs[idx]
+
+   def load_camera(self,id):
+      pass
 
    def run_main_loop(self):
       self._setup_draw()
       self.n=0
       self.hor_approx = 3
       self.vert_approx = 0
-      self.figs = [cube(-.4,-.4,0,1,1,1, (0,0,1)), 
-                   cone(-.4,-.4,0,1,1, (0,0,1)), 
-                   cylinder(-.4,-.4,0,1,1, (0,0,1)),
-                   pyramid(-.4,-.4,0,0.2,0.2, (0,0,1)),
-                   sphere(0,0,0,1,self.vert_approx,self.hor_approx,(0,0,1)),
-                   regular_fig(1,self.hor_approx,(0,0,1))]
-      self.fig = self.figs[self.n]
-      # fig = cube(-.4,-.4,0,1,1,1, (0,0,1)) # fix lines
-      # fig = cone(-.4,-.4,0,1,1, (0,0,1)) # this one works
-      # fig = cylinder(-.4,-.4,0,1,1, (0,0,1)) # this doesnt draw the top line
-      # fig = pyramid(-.4,-.4,0,0.2,0.2, (0,0,1)) # hmmmm
-      # fig = sphere(0,0,0,1,2,40,(0,0,1)) # for some reason only the first line gets drawn
-      # fig = regular_fig(1,6,(0,0,1)) 
 
       self._prepareShaders(vsc, fsc)
 
@@ -164,8 +155,9 @@ class Window_glfw:
          gl.glUseProgram(self.glProgramId)
          gl.glUniformMatrix4fv(self.matrixLocationId, 1, gl.GL_FALSE, vo.createPositionMatrix(self.state.currentPosition))
          gl.glUniform3f(self.rotationLocationId, *self.state.currentRotation)
- 
-         self.fig.draw()
+
+         for fig in self.figs:
+            fig.draw()
          # end draw
 
          glfw.swap_buffers(self.window)
