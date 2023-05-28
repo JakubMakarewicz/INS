@@ -11,15 +11,19 @@ from Lib.pyramid import pyramid
 from Lib.cube import cube
 from Lib.sphere import sphere
 from Lib.regular_fig import regular_fig
+from camera import *
 
 class WindowState:
     def __init__(self):
-        self.currentRotationType = vo.Rotation.OX
-        self.currentPosition = [0., 0., 0.]
-        self.currentRotation = [0., 0., 0.]
+        self.rotationType = vo.Rotation.OX
+        self.distance = 0.
+        self.near = 1.
+        self.far = 10.
+        self.rotation = [0., 0.]
         self.currentColor = [1., 1., 1.]
         self.circleQuality = 20
         self.rotationQuality = 100
+        self.camera = 0
 
 class Window_glfw:
    
@@ -38,7 +42,9 @@ class Window_glfw:
       self.vertexes = []
       self.glProgramId = None
       self.state = WindowState()
+
       self.figs = []
+      self.currently_selected=-1
       
    def setup_window(self) -> None:
       if not glfw.init():
@@ -93,41 +99,42 @@ class Window_glfw:
       gl.glBindVertexArray(self.vao)
 
    def _key_callback(self, window, key: int, scancode: int, action: int, mods: int):
+      if self.currently_selected == -1:
+         # camera rotation
+         if key == glfw.KEY_K:
+            self.state.rotation = [self.state.rotation[0] - np.pi/self.state.rotationQuality, self.state.rotation[1]]
+         elif key == glfw.KEY_I:
+            self.state.rotation = [self.state.rotation[0] + np.pi/self.state.rotationQuality, self.state.rotation[1]]
+         elif key == glfw.KEY_L:
+            self.state.rotation = [self.state.rotation[0], self.state.rotation[1] - np.pi/self.state.rotationQuality]
+         elif key == glfw.KEY_J:
+            self.state.rotation = [self.state.rotation[0], self.state.rotation[1] + np.pi/self.state.rotationQuality]
+         # camera movement
+         elif key == glfw.KEY_Q:
+            self.state.near = self.state.near - 0.1
+         elif key == glfw.KEY_A:
+            self.state.near = self.state.near + 0.1
+         elif key == glfw.KEY_W:
+            self.state.distance = self.state.distance - 0.1
+         elif key == glfw.KEY_S:
+            self.state.distance = self.state.distance + 0.1
+         elif key == glfw.KEY_E:
+            self.state.far = self.state.far - 0.1
+         elif key == glfw.KEY_D:
+            self.state.far = self.state.far + 0.1
+      else:
+         # fig movement
+         pass 
       if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
          glfw.set_window_should_close(self.window, glfw.TRUE)
-      elif key == glfw.KEY_A:
-         self.state.currentPosition = [self.state.currentPosition[0] - 0.1, self.state.currentPosition[1], self.state.currentPosition[2]]
-      elif key == glfw.KEY_D:
-         self.state.currentPosition = [self.state.currentPosition[0] + 0.1, self.state.currentPosition[1], self.state.currentPosition[2]]
-      elif key == glfw.KEY_S:
-         self.state.currentPosition = [self.state.currentPosition[0], self.state.currentPosition[1] - 0.1, self.state.currentPosition[2]]
-      elif key == glfw.KEY_W:
-         self.state.currentPosition = [self.state.currentPosition[0], self.state.currentPosition[1] + 0.1, self.state.currentPosition[2]]
-      elif key == glfw.KEY_Q:
-         self.state.currentPosition = [self.state.currentPosition[0], self.state.currentPosition[1], self.state.currentPosition[2] - 0.1]
-      elif key == glfw.KEY_E:
-         self.state.currentPosition = [self.state.currentPosition[0], self.state.currentPosition[1], self.state.currentPosition[2] + 0.1]
 
-      elif key == glfw.KEY_K:
-         self.state.currentRotation = [self.state.currentRotation[0] - np.pi/self.state.rotationQuality, self.state.currentRotation[1], self.state.currentRotation[2]]
-      elif key == glfw.KEY_I:
-         self.state.currentRotation = [self.state.currentRotation[0] + np.pi/self.state.rotationQuality, self.state.currentRotation[1], self.state.currentRotation[2]]
-      elif key == glfw.KEY_L:
-         self.state.currentRotation = [self.state.currentRotation[0], self.state.currentRotation[1] - np.pi/self.state.rotationQuality, self.state.currentRotation[2]]
-      elif key == glfw.KEY_J:
-         self.state.currentRotation = [self.state.currentRotation[0], self.state.currentRotation[1] + np.pi/self.state.rotationQuality, self.state.currentRotation[2]]
-      elif key == glfw.KEY_U:
-         self.state.currentRotation = [self.state.currentRotation[0], self.state.currentRotation[1], self.state.currentRotation[2] - np.pi/self.state.rotationQuality]
-      elif key == glfw.KEY_O:
-         self.state.currentRotation = [self.state.currentRotation[0], self.state.currentRotation[1], self.state.currentRotation[2] + np.pi/self.state.rotationQuality]
-
-      elif key == glfw.KEY_V:
-         self.load_fig("",0.4,0.4,0.4)
+      if key == glfw.KEY_V:
+         self.load_fig("",0.,0.,0.)
       elif key == glfw.KEY_B:
          self.delete_fig(len(self.figs)-1)   
 
-      elif key in [glfw.KEY_0, glfw.KEY_1, glfw.KEY_2, glfw.KEY_3, glfw.KEY_4, glfw.KEY_5] :
-         self.load_camera([0,1][key == glfw.KEY_0])
+      elif key in [glfw.KEY_0, glfw.KEY_1] :
+         self.state.camera = int(key != glfw.KEY_0)
 
    def load_fig(self,filename, x,y,z):
       self.figs.append(cube(x,y,z,1,1,1, (0,0,1)))
@@ -135,9 +142,6 @@ class Window_glfw:
    def delete_fig(self,idx):
       if idx >= 0 and idx < len(self.figs):
          del self.figs[idx]
-
-   def load_camera(self,id):
-      pass
 
    def run_main_loop(self):
       self._setup_draw()
@@ -150,13 +154,19 @@ class Window_glfw:
       while not glfw.window_should_close(self.window):       
          self.framebuffer_size = glfw.get_framebuffer_size(self.window)
          gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-
+         print(self.state.camera, self.state.rotation, self.state.distance, self.state.near, self.state.far)
          # draw
          gl.glUseProgram(self.glProgramId)
-         gl.glUniformMatrix4fv(self.matrixLocationId, 1, gl.GL_FALSE, vo.createPositionMatrix(self.state.currentPosition))
-         gl.glUniform3f(self.rotationLocationId, *self.state.currentRotation)
+         gl.glUniformMatrix4fv(
+            self.matrixLocationId,
+            1,
+            gl.GL_FALSE,
+            get_camera(self.state.camera,self.state.distance, *self.state.rotation, self.state.near, self.state.far)
+            )
+            
 
          for fig in self.figs:
+            gl.glUniform3f(self.rotationLocationId, *[0,0,0])
             fig.draw()
          # end draw
 
