@@ -168,9 +168,9 @@ class Window_glfw:
          self.state.camera = int(key != glfw.KEY_0)
 
    def load_fig(self,filename):
-      # self.figs.append(triangles(filename))
+      self.figs.append(triangles(filename))
       # self.figs.append(cube(0.4,0.4,0.4,1,1,1,(1,0,1)))
-      self.figs.append(cylinder(0.4,0.4,0.4,1,1,(1,0,1)))
+      # self.figs.append(cylinder(0.4,0.4,0.4,1,1,(1,0,1)))
 
    def delete_fig(self,idx):
       if idx >= 0 and idx < len(self.figs):
@@ -187,7 +187,6 @@ class Window_glfw:
       while not glfw.window_should_close(self.window):       
          self.framebuffer_size = glfw.get_framebuffer_size(self.window)
          gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-         print(self.state.camera, self.state.rotation, self.state.distance, self.state.near, self.state.far)
          # draw
          gl.glUseProgram(self.glProgramId)
          gl.glUniformMatrix4fv(
@@ -199,7 +198,7 @@ class Window_glfw:
             
 
          for fig in self.figs:
-            gl.glUniform3f(self.matrixLocationId, *[10,1,0])
+            gl.glUniform3f(self.matrixLocationId, *[1,1,0])
             gl.glUniform3f(self.rotationLocationId, *[0.,0.,0.])
             # gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
             # gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
