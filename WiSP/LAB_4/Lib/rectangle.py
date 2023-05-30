@@ -21,3 +21,15 @@ class rectangle(fig_base):
     )
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 6)
     glDisableVertexAttribArray(0)
+
+  def export(self):
+    return [
+      {
+        "vertices": list(map(list, self.vertices[0:3])),
+        "color": list(self.color[0:3])
+      },
+      {
+        "vertices": list(map(list,self.vertices[3:])),
+        "color": list(self.color[0:3])
+      }
+    ]

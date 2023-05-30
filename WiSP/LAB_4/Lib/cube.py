@@ -1,7 +1,7 @@
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 import numpy as np
-
+import json
 from Lib.rectangle import rectangle
 
 class cube:
@@ -31,3 +31,14 @@ class cube:
   def draw(self):
     for wall in self.walls:
       wall.draw()
+
+  def export(self, file_path):
+    triangles = []
+    for wall in self.walls:
+      for triangle in wall.export():
+        triangles.append(triangle)
+    data = {
+      "triangles": triangles
+    }
+    with open(file_path, 'w') as f:
+      json.dump(data, f)

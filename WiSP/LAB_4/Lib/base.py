@@ -9,8 +9,8 @@ class base:
   color = None
   
   def __init__(self, vertices, color):
-    self.vertices = np.array(vertices, dtype=np.float32)
-    self.color = np.array([*color]*len(vertices), dtype=np.float32)
+    self.vertices = np.array(vertices, dtype=float)
+    self.color = np.array([*color]*len(vertices), dtype=float)
     self.setup()
 
   def setup(self):

@@ -7,9 +7,9 @@ class fig_base(base):
   line = None
 	 
   def _color(self):
-    return (random.randint(0,1),random.randint(0,1),random.randint(0,1))
-  def __init__(self, vertices, color, line_vertices = [], draw_line=True):
-    super().__init__(vertices, self._color())
+    return (random.uniform(0,1),random.uniform(0,1),random.uniform(0,1))
+  def __init__(self, vertices, color, line_vertices = [], draw_line=True, randomize_color = True):
+    super().__init__(vertices, self._color() if randomize_color else color)
     if draw_line:
       self.line = line(line_vertices if line_vertices != [] else line.linify(self.vertices))
 
