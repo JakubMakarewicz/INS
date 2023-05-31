@@ -8,7 +8,7 @@ from Lib.line import line
 class pyramid:
   walls = [] 
 
-  def __init__(self,x,y,z,a,h, color): 
+  def __init__(self,x,y,z,a,h, color,posx=0,posy=0,posz=0):
     r = a / (2 * np.sin(a / 2))
     vertices = np.array([
       (x+r, y+r, z+0.),
@@ -16,6 +16,8 @@ class pyramid:
       ((x+r) * np.cos(240), (y+r) * np.sin(240), z+0.),
       (x+r, y+r + a * np.sqrt(3)/2, z+h),
     ])
+
+    self.poz = [posx, posy, posz]
 
     self.walls = [
       triangle(*vertices[[0,1,2]], color),

@@ -12,11 +12,12 @@ class sphere:
   def _color(self):
     return (random.randint(0,1),random.randint(0,1),random.randint(0,1))
 
-  def __init__(self,x,y,z,r,approximation_vertical, approximation_horizontal, color):
+  def __init__(self,x,y,z,r,approximation_vertical, approximation_horizontal, color,posx, posy, posz):
     self.circles.clear()
     self.strips.clear()
     self.fans.clear()
     self.circles.append(circle(x,y,z,r,self._color(),approximation_horizontal))
+    self.poz = [posx, posy, posz]
     for i in range(1,approximation_vertical+1):
       hn = i*r/(approximation_vertical+1)
       rn = np.sqrt(np.power(r,2) - np.power(hn,2))

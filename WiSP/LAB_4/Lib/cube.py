@@ -2,12 +2,13 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 import numpy as np
 import json
+import vectorOperations
 from Lib.rectangle import rectangle
 
 class cube:
   walls = [] 
 
-  def __init__(self,x,y,z,a,b,c, color):
+  def __init__(self,x,y,z,a,b,c, color,posx,posy,posz):
     vertices = np.array([
       (x+0,y+0,z+0), 
       (x+a,y+0,z+0),
@@ -18,6 +19,7 @@ class cube:
       (x+a,y+b,z+c),
       (x+0,y+b,z+c)  
     ])
+    self.poz = [posx,posy,posz]
 
     self.walls = [
       rectangle(*vertices[[0,1,2,3]], color),
