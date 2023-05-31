@@ -1,6 +1,7 @@
 import OpenGL.GL as gl
 import glfw
 import sys
+import time
 import numpy as np
 
 from shader import *
@@ -130,47 +131,90 @@ class Window_glfw:
       gl.glBindVertexArray(self.vao)
 
    def _key_callback(self, window, key: int, scancode: int, action: int, mods: int):
-      if self.currently_selected == -1:
-         # camera rotation
-         if key == glfw.KEY_L:
-            self.state.rotation = [self.state.rotation[0] - np.pi/self.state.rotationQuality, self.state.rotation[1]]
-         elif key == glfw.KEY_J:
-            self.state.rotation = [self.state.rotation[0] + np.pi/self.state.rotationQuality, self.state.rotation[1]]
-         elif key == glfw.KEY_I:
-            self.state.rotation = [self.state.rotation[0], self.state.rotation[1] - np.pi/self.state.rotationQuality]
-         elif key == glfw.KEY_K:
-            self.state.rotation = [self.state.rotation[0], self.state.rotation[1] + np.pi/self.state.rotationQuality]
-         # camera movement
-         elif key == glfw.KEY_Q:
-            self.state.near = self.state.near - 0.1
-         elif key == glfw.KEY_A:
-            self.state.near = self.state.near + 0.1
-         elif key == glfw.KEY_W:
-            self.state.distance = self.state.distance - 0.1
-         elif key == glfw.KEY_S:
-            self.state.distance = self.state.distance + 0.1
-         elif key == glfw.KEY_E:
-            self.state.far = self.state.far - 0.1
-         elif key == glfw.KEY_D:
-            self.state.far = self.state.far + 0.1
-      else:
-         # fig movement
-         pass 
-      if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
-         glfw.set_window_should_close(self.window, glfw.TRUE)
+      if (action == glfw.PRESS) | (action == glfw.REPEAT):
+         if self.currently_selected == -1:
+            # camera rotation
+            if key == glfw.KEY_L:
+               self.state.rotation = [self.state.rotation[0] - np.pi/self.state.rotationQuality, self.state.rotation[1]]
+            elif key == glfw.KEY_J:
+               self.state.rotation = [self.state.rotation[0] + np.pi/self.state.rotationQuality, self.state.rotation[1]]
+            elif key == glfw.KEY_I:
+               self.state.rotation = [self.state.rotation[0], self.state.rotation[1] - np.pi/self.state.rotationQuality]
+            elif key == glfw.KEY_K:
+               self.state.rotation = [self.state.rotation[0], self.state.rotation[1] + np.pi/self.state.rotationQuality]
+            # camera movement
+            elif key == glfw.KEY_Q:
+               self.state.near = self.state.near - 0.1
+               print("near=",self.state.near)
+            elif key == glfw.KEY_A:
+               self.state.near = self.state.near + 0.1
+               print("near=", self.state.near)
+            elif key == glfw.KEY_W:
+               self.state.distance = self.state.distance - 0.1
+               print("distance=", self.state.distance)
+            elif key == glfw.KEY_S:
+               self.state.distance = self.state.distance + 0.1
+               print("distance=", self.state.distance)
+            elif key == glfw.KEY_E:
+               self.state.far = self.state.far - 0.1
+               print("far=", self.state.far)
+            elif key == glfw.KEY_D:
+               self.state.far = self.state.far + 0.1
+               print("far=", self.state.far)
+         else:
+            # fig movement
+            pass
+         if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
+            glfw.set_window_should_close(self.window, glfw.TRUE)
 
-      if key == glfw.KEY_V:
-         self.load_fig("test.json")
-      elif key == glfw.KEY_B:
-         self.delete_fig(len(self.figs)-1)   
+         if key == glfw.KEY_V:
 
-      elif key in [glfw.KEY_0, glfw.KEY_1] :
-         self.state.camera = int(key != glfw.KEY_0)
+            self.load_fig("test.json",1)        # cube
 
-   def load_fig(self,filename):
-      self.figs.append(triangles(filename))
-      # self.figs.append(cube(0.4,0.4,0.4,1,1,1,(1,0,1)))
-      # self.figs.append(cylinder(0.4,0.4,0.4,1,1,(1,0,1)))
+         if key == glfw.KEY_2:
+
+            self.load_fig("test.json",2)        # stozek
+
+         if key == glfw.KEY_3:
+
+            self.load_fig("test.json",3)        # kula
+
+
+         if key == glfw.KEY_4:
+
+            self.load_fig("test.json",4)
+
+         if key == glfw.KEY_5:
+
+            self.load_fig("test.json",5)
+
+         if key == glfw.KEY_6:
+
+            self.load_fig("test.json",6)
+
+         elif key == glfw.KEY_B:
+            self.delete_fig(len(self.figs)-1)
+
+         elif key in [glfw.KEY_0, glfw.KEY_1] :
+            self.state.camera = int(key != glfw.KEY_0)
+            self.distance = 2.
+            self.near = 1.
+            self.far = 10.
+
+   def load_fig(self,filename,fignum):
+      #self.figs.append(triangles(filename))
+      if fignum==1:
+         self.figs.append(cube(0.4, 0.4, 0.4, 1, 1, 1, (1, 0, 1), 3+ (len(self.figs) - 1) * 3, 0, 0))
+      elif fignum==2:
+         self.figs.append(cone(-.4,-.4,0,1,1, (0,0,1),40, 3+(len(self.figs) - 1) * 3, 0, 0))
+      elif fignum == 3:
+         self.figs.append(sphere(0, 0, 0, 1, 2, 40, (0, 0, 1),3+(len(self.figs) - 1) * 3, 1, 0))
+      elif fignum == 4:
+         self.figs.append(cylinder(-.4, -.4, 0, 1, 1, (0, 0, 1),40,3+(len(self.figs) - 1) * 3, 1, 0))
+      elif fignum == 5:
+         self.figs.append(pyramid(-.4,-.4,0,1,1, (0,0,1),3+(len(self.figs) - 1) * 3, 0, 0))
+      elif fignum == 6:
+         self.figs.append(triangles(filename))
 
    def delete_fig(self,idx):
       if idx >= 0 and idx < len(self.figs):
@@ -184,7 +228,7 @@ class Window_glfw:
 
       self._prepareShaders(vsc, fsc)
 
-      while not glfw.window_should_close(self.window):       
+      while not glfw.window_should_close(self.window):
          self.framebuffer_size = glfw.get_framebuffer_size(self.window)
          gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
          # draw
@@ -198,7 +242,7 @@ class Window_glfw:
             
 
          for fig in self.figs:
-            gl.glUniform3f(self.matrixLocationId, *[1,1,0])
+            gl.glUniform3f(self.matrixLocationId, *fig.poz)
             gl.glUniform3f(self.rotationLocationId, *[0.,0.,0.])
             # gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
             # gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
@@ -214,4 +258,3 @@ class Window_glfw:
 window = Window_glfw()
 window.setup_window()
 window.run_main_loop()
-# cube(0.3,0.3,0.3,1,1,1, (0,0,1)).export("test.json")
