@@ -14,10 +14,10 @@ class cube:
       (x+a,y+0,z+0),
       (x+a,y+b,z+0),
       (x+0,y+b,z+0),
-      (x+0,y+0,z+c), 
+      (x+0,y+0,z+c),
       (x+a,y+0,z+c),
       (x+a,y+b,z+c),
-      (x+0,y+b,z+c)  
+      (x+0,y+b,z+c) 
     ])
     self.poz = [posx,posy,posz]
 

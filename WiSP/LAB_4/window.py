@@ -169,15 +169,15 @@ class Window_glfw:
 
          if key == glfw.KEY_V:
 
-            self.load_fig("test.json",1)        # cube
+            self.load_fig("test.json",1)        # cubej
 
          if key == glfw.KEY_2:
 
             self.load_fig("test.json",2)        # stozek
 
          if key == glfw.KEY_3:
-
-            self.load_fig("test.json",3)        # kula
+            # print()
+            self.load_fig("sphere.json",3)        # kula
 
 
          if key == glfw.KEY_4:
@@ -202,7 +202,8 @@ class Window_glfw:
             self.far = 10.
 
    def load_fig(self,filename,fignum):
-      #self.figs.append(triangles(filename))
+      # self.figs.append(triangles(filename,0,0,0))
+
       if fignum==1:
          self.figs.append(cube(0.4, 0.4, 0.4, 1, 1, 1, (1, 0, 1), 3+ (len(self.figs) - 1) * 3, 0, 0))
       elif fignum==2:
@@ -214,7 +215,7 @@ class Window_glfw:
       elif fignum == 5:
          self.figs.append(pyramid(-.4,-.4,0,1,1, (0,0,1),3+(len(self.figs) - 1) * 3, 0, 0))
       elif fignum == 6:
-         self.figs.append(triangles(filename))
+         self.figs.append(triangles(filename, 3+(len(self.figs) -1) * 3, 1, 0))
 
    def delete_fig(self,idx):
       if idx >= 0 and idx < len(self.figs):
@@ -258,3 +259,5 @@ class Window_glfw:
 window = Window_glfw()
 window.setup_window()
 window.run_main_loop()
+
+# sphere(0, 0, 0, 1, 2, 40, (0, 0, 1),0, 1, 0).export("sphere.json")

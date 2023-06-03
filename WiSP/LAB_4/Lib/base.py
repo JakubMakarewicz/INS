@@ -43,3 +43,6 @@ class base:
 
   def _draw(self):
     raise Exception("not implemented")
+  
+def map_vertex(vertex):
+  return list(map(float, vertex))

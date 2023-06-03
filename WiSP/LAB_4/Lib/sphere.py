@@ -1,4 +1,5 @@
 from OpenGL.GLUT import *
+import json
 from OpenGL.GL import *
 import numpy as np
 import random 
@@ -36,3 +37,15 @@ class sphere:
       strip.draw()
     for fan in self.fans:
       fan.draw()
+  
+  def export(self, file_path):
+    triangles = []
+    for fan in self.fans:
+      triangles+=fan.export()
+    for strip in self.strips:
+      triangles+=strip.export()
+    data = {
+      "triangles": triangles
+    }
+    with open(file_path, 'w') as f:
+      json.dump(data, f)

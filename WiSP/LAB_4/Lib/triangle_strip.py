@@ -4,6 +4,7 @@ import numpy as np
 
 from Lib.fig_base import fig_base
 from Lib.circle import circle
+import Lib.base as base
 
 class triangle_strip(fig_base):
   
@@ -30,3 +31,12 @@ class triangle_strip(fig_base):
     )
     glDrawArrays(GL_TRIANGLE_STRIP, 0, self.vertices.size)
     glDisableVertexAttribArray(0)
+
+  def export(self):
+    ret_list = []
+    for i in range(0, len(self.vertices)-2):
+      ret_list.append({
+        "vertices": list(map(base.map_vertex, [self.vertices[i],self.vertices[i+1], self.vertices[i+2]])),
+        "color": list(map(float, self.color[0:3]))
+      })
+    return ret_list
