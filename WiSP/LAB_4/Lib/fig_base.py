@@ -22,3 +22,6 @@ class fig_base(base):
 
   def _draw(self):
     raise Exception("not implemented")
+  
+  def get_triangles(self):
+    raise Exception("not implemented")

@@ -5,7 +5,9 @@ import numpy as np
 from Lib.triangle import triangle
 from Lib.line import line
 
-class pyramid:
+from Lib.fig_base import fig_base
+
+class pyramid(fig_base):
   walls = [] 
 
   def __init__(self,x,y,z,a,h, color,posx=0,posy=0,posz=0):

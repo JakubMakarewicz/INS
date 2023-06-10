@@ -2,6 +2,7 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 from Lib.fig_base import fig_base
 from Lib.line import line
+import json
 
 class rectangle(fig_base):
    
@@ -22,7 +23,7 @@ class rectangle(fig_base):
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 6)
     glDisableVertexAttribArray(0)
 
-  def export(self):
+  def get_triangles(self):
     return [
       {
         "vertices": list(map(list, self.vertices[0:3])),
@@ -33,3 +34,7 @@ class rectangle(fig_base):
         "color": list(self.color[0:3])
       }
     ]
+  
+  def export(self, file_path):
+    with open(file_path, 'w') as f:
+      json.dump(self.get_triangles(), f)

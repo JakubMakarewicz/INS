@@ -4,8 +4,9 @@ import numpy as np
 import json
 import vectorOperations
 from Lib.rectangle import rectangle
+from Lib.fig_base import fig_base
 
-class cube:
+class cube(fig_base):
   walls = [] 
 
   def __init__(self,x,y,z,a,b,c, color,posx,posy,posz):
@@ -34,13 +35,15 @@ class cube:
     for wall in self.walls:
       wall.draw()
 
-  def export(self, file_path):
+  def get_triangles(self):
     triangles = []
     for wall in self.walls:
-      for triangle in wall.export():
+      for triangle in wall.get_triangles():
         triangles.append(triangle)
-    data = {
+    return {
       "triangles": triangles
     }
+
+  def export(self, file_path):
     with open(file_path, 'w') as f:
-      json.dump(data, f)
+      json.dump(self.get_triangles(), f)

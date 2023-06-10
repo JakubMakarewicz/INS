@@ -7,7 +7,9 @@ from Lib.circle import circle
 from Lib.triangle_strip import triangle_strip
 from Lib.triangle_fan import triangle_fan
 
-class sphere:
+from Lib.fig_base import fig_base
+
+class sphere(fig_base):
   circles, strips, fans = list(), list(), list()
 
   def _color(self):
@@ -37,15 +39,17 @@ class sphere:
       strip.draw()
     for fan in self.fans:
       fan.draw()
-  
-  def export(self, file_path):
+
+  def get_triangles(self):
     triangles = []
     for fan in self.fans:
-      triangles+=fan.export()
+      triangles+=fan.get_triangles()
     for strip in self.strips:
-      triangles+=strip.export()
-    data = {
+      triangles+=strip.get_triangles()
+    return {
       "triangles": triangles
     }
+  
+  def export(self, file_path):
     with open(file_path, 'w') as f:
-      json.dump(data, f)
+      json.dump(self.get_triangles(), f)

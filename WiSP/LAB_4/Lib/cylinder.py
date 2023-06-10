@@ -6,7 +6,9 @@ from Lib.triangle_strip import triangle_strip
 from Lib.circle import circle
 from Lib.line import line
 
-class cylinder:
+from Lib.fig_base import fig_base
+
+class cylinder(fig_base):
   wall, base, top  = None, None, None
 
   def __init__(self,x,y,z,r,h, color, approximation=40,posx=0,posy=0,posz=0):

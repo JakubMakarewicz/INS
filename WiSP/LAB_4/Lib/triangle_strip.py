@@ -1,7 +1,7 @@
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 import numpy as np
-
+import json
 from Lib.fig_base import fig_base
 from Lib.circle import circle
 import Lib.base as base
@@ -32,7 +32,7 @@ class triangle_strip(fig_base):
     glDrawArrays(GL_TRIANGLE_STRIP, 0, self.vertices.size)
     glDisableVertexAttribArray(0)
 
-  def export(self):
+  def get_triangles(self):
     ret_list = []
     for i in range(0, len(self.vertices)-2):
       ret_list.append({
@@ -40,3 +40,7 @@ class triangle_strip(fig_base):
         "color": list(map(float, self.color[0:3]))
       })
     return ret_list
+
+  def export(self, file_path):
+    with open(file_path, 'w') as f:
+      json.dump(self.get_triangles(), f)

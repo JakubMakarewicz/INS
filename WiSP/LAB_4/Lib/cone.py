@@ -5,10 +5,9 @@ import numpy as np
 from Lib.triangle_fan import triangle_fan
 from Lib.circle import circle
 from Lib.line import line
-
-class cone:
+from Lib.fig_base import fig_base
+class cone(fig_base):
   wall, base= None, None
-
 
   def __init__(self,x,y,z,r,h, color, approximation=40,posx=0,posy=0,posz=0):
     self.base = circle(x,y,z,r,color,approximation)

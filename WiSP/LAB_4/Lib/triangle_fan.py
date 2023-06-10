@@ -2,6 +2,8 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 from Lib.fig_base import fig_base
 import Lib.base as base
+import json
+
 class triangle_fan(fig_base):
   
   def __init__(self, vertices, color, line_vertices = [], draw_line=True): 
@@ -21,7 +23,7 @@ class triangle_fan(fig_base):
     glDrawArrays(GL_TRIANGLE_FAN, 0, self.vertices.size)
     glDisableVertexAttribArray(0)
 
-  def export(self):
+  def get_triangles(self):
     ret_list = []
     for i in range(2, len(self.vertices)):
       ret_list.append({
@@ -29,4 +31,8 @@ class triangle_fan(fig_base):
         "color": list(map(float, self.color[0:3]))
       })
     return ret_list
+
+  def export(self, file_path):
+    with open(file_path, 'w') as f:
+      json.dump(self.get_triangles(), f)
 
