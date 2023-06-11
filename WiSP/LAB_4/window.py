@@ -163,8 +163,41 @@ class Window_glfw:
                self.state.far = self.state.far + 0.1
                print("far=", self.state.far)
          else:
+            # fig rotation
+            if key == glfw.KEY_L:
+               pass
+            elif key == glfw.KEY_J:
+               pass
+            elif key == glfw.KEY_I:
+               pass
+            elif key == glfw.KEY_K:
+               pass
             # fig movement
+            elif key == glfw.KEY_Q:
+               self.figs[self.currently_selected].move([0,0,-0.1])
+               print("z=",self.figs[self.currently_selected].poz[2])
+            elif key == glfw.KEY_E:
+               self.figs[self.currently_selected].move([0,0,0.1])
+               print("z=",self.figs[self.currently_selected].poz[2])
+            elif key == glfw.KEY_A:
+               self.figs[self.currently_selected].move([-0.1,0,0])
+               print("z=",self.figs[self.currently_selected].poz[0])
+            elif key == glfw.KEY_D:
+               self.figs[self.currently_selected].move([0.1,0,0])
+               print("z=",self.figs[self.currently_selected].poz[0])
+            elif key == glfw.KEY_W:
+               self.figs[self.currently_selected].move([0,0.1,0])
+               print("z=",self.figs[self.currently_selected].poz[1])
+            elif key == glfw.KEY_S:
+               self.figs[self.currently_selected].move([0,-0.1,0])
+               print("z=",self.figs[self.currently_selected].poz[1])
             pass
+
+         if action == glfw.PRESS and key == glfw.KEY_LEFT:
+            self.currently_selected = max(-1, self.currently_selected - 1)
+         if action == glfw.PRESS and key == glfw.KEY_RIGHT:
+            self.currently_selected = min ([-1,len(self.figs)][len(self.figs)>0], self.currently_selected + 1)
+         print(self.currently_selected)
          if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
             glfw.set_window_should_close(self.window, glfw.TRUE)
 
@@ -206,7 +239,7 @@ class Window_glfw:
       # self.figs.append(triangles(filename,0,0,0))
 
       if fignum==1:
-         self.figs.append(cube(0.4, 0.4, 0.4, 1, 1, 1, (1, 0, 1), 3 * len(self.figs), 0 * len(self.figs), 0 * len(self.figs)))
+         self.figs.append(cube(0.4, 0.4, 0.4, 1, 1, 1, (1, 0, 1), 0,0,0))
       elif fignum==2:
          self.figs.append(cone(-.4,-.4,0,1,1, (0,0,1),40, 3+(len(self.figs) - 1) * 3, 0, 0))
       elif fignum == 3:

@@ -160,6 +160,9 @@ class fig_base(base):
         return True
     return False
 
+  def move(self, vec):
+    self.poz = [self.poz[0] + vec[0], self.poz[1] + vec[1], self.poz[2] + vec[2]]
+
   def __n_param(self, triangle: 'list[list[float]]'):
     return np.cross(triangle[1] - triangle[0], triangle[2] - triangle[0])
 
