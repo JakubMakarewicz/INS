@@ -206,7 +206,7 @@ class Window_glfw:
       # self.figs.append(triangles(filename,0,0,0))
 
       if fignum==1:
-         self.figs.append(cube(0.4, 0.4, 0.4, 1, 1, 1, (1, 0, 1), 3+ (len(self.figs) - 1) * 3, 0, 0))
+         self.figs.append(cube(0.4, 0.4, 0.4, 1, 1, 1, (1, 0, 1), 3 * len(self.figs), 0 * len(self.figs), 0 * len(self.figs)))
       elif fignum==2:
          self.figs.append(cone(-.4,-.4,0,1,1, (0,0,1),40, 3+(len(self.figs) - 1) * 3, 0, 0))
       elif fignum == 3:

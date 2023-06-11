@@ -27,8 +27,6 @@ class base:
     self.disable_color()
 
   def apply_color(self):
-    glBindBuffer(GL_ARRAY_BUFFER, self.color_buffer)
-    glBufferData(GL_ARRAY_BUFFER, self.color.nbytes, self.color, GL_DYNAMIC_DRAW)
     glEnableVertexAttribArray(1)
     glBindBuffer(GL_ARRAY_BUFFER, self.color_buffer)
     glVertexAttribPointer(
