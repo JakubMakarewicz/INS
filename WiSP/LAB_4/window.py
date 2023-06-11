@@ -164,16 +164,26 @@ class Window_glfw:
                print("far=", self.state.far)
          else:
             # fig rotation
-            if key == glfw.KEY_L:
-               pass
+            if key == glfw.KEY_U:
+               self.figs[self.currently_selected].rotate([0,0,-0.1])
+               print("z=",self.figs[self.currently_selected].rotation[2])
+            elif key == glfw.KEY_O:
+               self.figs[self.currently_selected].rotate([0,0,0.1])
+               print("z=",self.figs[self.currently_selected].rotation[2])
             elif key == glfw.KEY_J:
-               pass
+               self.figs[self.currently_selected].rotate([-0.1,0,0])
+               print("z=",self.figs[self.currently_selected].rotation[0])
+            elif key == glfw.KEY_L:
+               self.figs[self.currently_selected].rotate([0.1,0,0])
+               print("z=",self.figs[self.currently_selected].rotation[0])
             elif key == glfw.KEY_I:
-               pass
+               self.figs[self.currently_selected].rotate([0,0.1,0])
+               print("z=",self.figs[self.currently_selected].rotation[1])
             elif key == glfw.KEY_K:
-               pass
+               self.figs[self.currently_selected].rotate([0,-0.1,0])
+               print("z=",self.figs[self.currently_selected].rotation[1])
             # fig movement
-            elif key == glfw.KEY_Q:
+            if key == glfw.KEY_Q:
                self.figs[self.currently_selected].move([0,0,-0.1])
                print("z=",self.figs[self.currently_selected].poz[2])
             elif key == glfw.KEY_E:
@@ -191,7 +201,6 @@ class Window_glfw:
             elif key == glfw.KEY_S:
                self.figs[self.currently_selected].move([0,-0.1,0])
                print("z=",self.figs[self.currently_selected].poz[1])
-            pass
 
          if action == glfw.PRESS and key == glfw.KEY_LEFT:
             self.currently_selected = max(-1, self.currently_selected - 1)
@@ -227,7 +236,7 @@ class Window_glfw:
             self.load_fig("test.json",6)
 
          elif key == glfw.KEY_B:
-            self.delete_fig(len(self.figs)-1)
+            self.delete_fig(self.currently_selected)
 
          elif key in [glfw.KEY_0, glfw.KEY_1] :
             self.state.camera = int(key != glfw.KEY_0)
@@ -243,7 +252,7 @@ class Window_glfw:
       elif fignum==2:
          self.figs.append(cone(-.4,-.4,0,1,1, (0,0,1),40, 3+(len(self.figs) - 1) * 3, 0, 0))
       elif fignum == 3:
-         self.figs.append(sphere(0, 0, 0, 1, 2, 40, (0, 0, 1),3+(len(self.figs) - 1) * 3, 1, 0))
+         self.figs.append(sphere(0, 0, 0, 1, 2, 5, (0, 0, 1),3+(len(self.figs) - 1) * 3, 1, 0))
       elif fignum == 4:
          self.figs.append(cylinder(-.4, -.4, 0, 1, 1, (0, 0, 1),40,3+(len(self.figs) - 1) * 3, 1, 0))
       elif fignum == 5:
@@ -285,7 +294,7 @@ class Window_glfw:
 
          for i, fig in enumerate(self.figs):
             gl.glUniform3f(self.matrixLocationId, *fig.poz)
-            gl.glUniform3f(self.rotationLocationId, *[0.,0.,0.])
+            gl.glUniform3f(self.rotationLocationId, *fig.rotation)
             # gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
             # gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
             fig.handle_collision(any(collision_matrix[i]))

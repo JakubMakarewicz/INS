@@ -52,8 +52,6 @@ class sphere(fig_base):
     if self.is_colliding != collision:
       self.is_colliding = collision
       self.color = [self.init_color, np.array([1,0,0]*len(self.vertices), dtype=np.float32)][int(collision)]
-      for circle in self.circles:
-        circle.handle_collision(collision)
       for strip in self.strips:
         strip.handle_collision(collision)
       for fan in self.fans:

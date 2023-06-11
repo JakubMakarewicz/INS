@@ -9,7 +9,7 @@ class fig_base(base):
   line = None
   init_color = None
   is_colliding = False
-
+  rotation = [0.,0.,0.]
   def _color(self):
     return (random.uniform(0,1),random.uniform(0,1),random.uniform(0,1))
   
@@ -38,19 +38,42 @@ class fig_base(base):
   def get_triangles(self):
     raise Exception("not implemented")
   
-  def get_pos(self):
-    return np.array(
-        [
-          np.array(vertex, dtype=np.float32)
-          for vertex in self.poz
-        ], 
-        dtype=np.float32)
+  def move(self, vec):
+    self.poz = [self.poz[0] + vec[0], self.poz[1] + vec[1], self.poz[2] + vec[2]]
+  
+  def rotate(self, vec):
+    self.rotation = [self.rotation[0] + vec[0], self.rotation[1] + vec[1], self.rotation[2] + vec[2]]
 
+  def get_pos(self):
+    return np.array(self.poz, dtype=np.float32)
+        
+  def get_rotation(self):
+    return np.array(
+      [
+        np.array(
+          [1,0,0,
+           0,np.cos(self.rotation[0]),-np.sin(self.rotation[0]),
+           0,np.sin(self.rotation[0]),np.cos(self.rotation[0])],
+          dtype=np.float32).reshape(3,3),
+        np.array(
+          [np.cos(self.rotation[1]),0,np.sin(self.rotation[1]),
+           0,1,0,
+           -np.sin(self.rotation[1]),0,np.cos(self.rotation[1])],
+          dtype=np.float32).reshape(3,3),
+        np.array(
+          [np.cos(self.rotation[2]),-np.sin(self.rotation[2]),0,
+           np.sin(self.rotation[2]),np.cos(self.rotation[2]),0,
+           0,0,1],
+          dtype=np.float32).reshape(3,3)
+      ], 
+      dtype=np.float32)
+  
   def check_collision(self, otherFigure: 'fig_base'):
     triangles = [
       np.array(
         [
-          np.array(vertex, dtype=np.float32) + self.get_pos()
+          np.dot(self.get_rotation(), np.array(vertex, dtype=np.float32))[0]
+            + self.get_pos()
           for vertex in triangle["vertices"]
         ], 
         dtype=np.float32) 
@@ -59,7 +82,8 @@ class fig_base(base):
     other_triangles = [
       np.array(
         [
-          np.array(vertex, dtype=np.float32) + otherFigure.get_pos()
+          np.dot(otherFigure.get_rotation(), np.array(vertex, dtype=np.float32))[0]
+            + otherFigure.get_pos()
           for vertex in triangle["vertices"]
         ], 
         dtype=np.float32) 
@@ -160,8 +184,6 @@ class fig_base(base):
         return True
     return False
 
-  def move(self, vec):
-    self.poz = [self.poz[0] + vec[0], self.poz[1] + vec[1], self.poz[2] + vec[2]]
 
   def __n_param(self, triangle: 'list[list[float]]'):
     return np.cross(triangle[1] - triangle[0], triangle[2] - triangle[0])
