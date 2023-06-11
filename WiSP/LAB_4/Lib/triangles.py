@@ -3,6 +3,7 @@ import json
 from Lib.triangle import triangle
 from Lib.base import base
 from Lib.fig_base import fig_base
+import numpy as np 
 
 class triangles(fig_base):
   triangle_list = []
@@ -26,10 +27,15 @@ class triangles(fig_base):
         "vertices": list(map(base.map_vertex, triangle.vertices)),
         "color": list(map(float, triangle.color))
       })
-    return {
-      "triangles": triangles
-    }
+    return triangles
+
+  def handle_collision(self, collision:bool):
+    if self.is_colliding != collision:
+      self.is_colliding = collision
+      self.color = [self.init_color, np.array([1,0,0]*len(self.vertices), dtype=np.float32)][int(collision)]
+      for triangle in self.triangle_list:
+        triangle.handle_collision(collision)
 
   def export(self, file_path):
     with open(file_path, 'w') as f:
-      json.dump(self.get_triangles(), f)
+      json.dump({ "triangles": self.get_triangles() }, f)

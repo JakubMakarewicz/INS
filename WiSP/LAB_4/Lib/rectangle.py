@@ -37,4 +37,4 @@ class rectangle(fig_base):
   
   def export(self, file_path):
     with open(file_path, 'w') as f:
-      json.dump(self.get_triangles(), f)
+      json.dump({ "triangles": self.get_triangles() }, f)

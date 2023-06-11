@@ -13,6 +13,7 @@ from Lib.cube import cube
 from Lib.sphere import sphere
 from Lib.regular_fig import regular_fig
 from Lib.triangles import triangles
+from Lib.fig_base import fig_base
 from camera import *
 
 class WindowState:
@@ -45,7 +46,7 @@ class Window_glfw:
       self.glProgramId = None
       self.state = WindowState()
 
-      self.figs = []
+      self.figs: list[fig_base] = []
       self.currently_selected=-1
       
    def setup_window(self) -> None:
@@ -241,12 +242,20 @@ class Window_glfw:
             get_camera(self.state.camera,self.state.distance, *self.state.rotation, self.state.near, self.state.far)
             )
             
+         collision_matrix = [[False]*len(self.figs)]*len(self.figs)
+         for i, fig in enumerate(self.figs):
+            if i < len(self.figs):
+               for j,other in enumerate(self.figs[i+1:]):
+                  if fig.check_collision(other):
+                    collision_matrix[i][j] = True
+                    collision_matrix[j][i] = True
 
-         for fig in self.figs:
+         for i, fig in enumerate(self.figs):
             gl.glUniform3f(self.matrixLocationId, *fig.poz)
             gl.glUniform3f(self.rotationLocationId, *[0.,0.,0.])
             # gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
             # gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
+            fig.handle_collision(any(collision_matrix[i]))
             fig.draw()
          # end draw
 

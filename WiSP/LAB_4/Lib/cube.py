@@ -40,10 +40,15 @@ class cube(fig_base):
     for wall in self.walls:
       for triangle in wall.get_triangles():
         triangles.append(triangle)
-    return {
-      "triangles": triangles
-    }
+    return triangles
+
+  def handle_collision(self, collision:bool):
+    if self.is_colliding != collision:
+      self.is_colliding = collision
+      self.color = [self.init_color, np.array([1,0,0]*len(self.vertices), dtype=np.float32)][int(collision)]
+      for wall in self.walls:
+        wall.handle_collision(collision)
 
   def export(self, file_path):
     with open(file_path, 'w') as f:
-      json.dump(self.get_triangles(), f)
+      json.dump({ "triangles": self.get_triangles() }, f)
