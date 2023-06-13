@@ -10,10 +10,11 @@ class fig_base(base):
   init_color = None
   is_colliding = False
   rotation = [0.,0.,0.]
+  poz = [0.,0.,0.,]
   def _color(self):
     return (random.uniform(0,1),random.uniform(0,1),random.uniform(0,1))
   
-  def __init__(self, vertices, color, line_vertices = [], draw_line=True, randomize_color = True):
+  def __init__(self, vertices, color, line_vertices = [], draw_line=True, randomize_color = False):
     super().__init__(vertices, self._color() if randomize_color else color)
     self.init_color = self.color
     if draw_line:
@@ -68,6 +69,71 @@ class fig_base(base):
       ], 
       dtype=np.float32)
   
+  def check_triangle_collision(self, triangle, otherTriangle):
+    epsilon = 0.05
+    n2 = self.__n_param(otherTriangle)
+    d2 = self.__d_param(n2, otherTriangle)
+
+    if self.__check_plane_overlap(d2, n2, triangle) is False:
+      return False
+
+    n1 = self.__n_param(triangle)
+    d1 = self.__d_param(n1, triangle)
+    if self.__check_plane_overlap(d1, n1, otherTriangle) is False:
+      return False
+    
+    dv10 = np.dot(n2, triangle[0]) + d2
+    dv11 = np.dot(n2, triangle[1]) + d2
+    dv12 = np.dot(n2, triangle[2]) + d2
+
+    dv20 = np.dot(n1, otherTriangle[0]) + d1
+    dv21 = np.dot(n1, otherTriangle[1]) + d1
+    dv22 = np.dot(n1, otherTriangle[2]) + d1
+
+    if dv10 < epsilon:
+      dv10 = 0
+    if dv11 < epsilon:
+      dv11 = 0
+    if dv12 < epsilon:
+      dv12 = 0
+    if dv20 < epsilon:
+      dv20 = 0
+    if dv21 < epsilon:
+      dv21 = 0
+    if dv22 < epsilon:
+      dv22 = 0
+  
+    if dv10 == dv11 == dv12 == 0:
+      if self.__2d_collisionCheck(triangle, otherTriangle):
+        return True
+      return False
+
+    if np.sign(dv10) == np.sign(dv11):
+      return self.check_triangle_collision([triangle[0], triangle[2], triangle[1]], otherTriangle)
+    if np.sign(dv11) == np.sign(dv12):
+      return self.check_triangle_collision([triangle[1], triangle[0], triangle[2]], otherTriangle)
+    # if np.sign(dv20) == np.sign(dv21):
+    #   return self.check_triangle_collision(triangle, [otherTriangle[0], otherTriangle[2], otherTriangle[1]])
+    # if np.sign(dv21) == np.sign(dv22):
+    #   return self.check_triangle_collision(triangle, [otherTriangle[1], otherTriangle[0], otherTriangle[2]])
+    
+    D = np.cross(n1, n2)
+    p10 = self.__get_p_param(triangle[0], D)
+    p11 = self.__get_p_param(triangle[1], D)
+    p12 = self.__get_p_param(triangle[2], D)
+    p20 = self.__get_p_param(otherTriangle[0], D)
+    p21 = self.__get_p_param(otherTriangle[1], D)
+    p22 = self.__get_p_param(otherTriangle[2], D)
+
+    t11 = p10 + (p11 - p10) * dv10 / (dv10 - dv11)
+    t12 = p11 + (p12 - p11) * dv11 / (dv11 - dv12)
+
+    t21 = p20 + (p21 - p20) * dv20 / (dv20 - dv21)
+    t22 = p21 + (p22 - p21) * dv21 / (dv21 - dv22)
+    if t11 < t21 < t12 or t11 < t22 < t12 or t21 < t11 < t22 or t21 < t12 < t22 \
+        or t11 > t21 > t12 or t11 > t22 > t12 or t21 > t11 > t22 or t21 > t12 > t22:
+        return True
+
   def check_collision(self, otherFigure: 'fig_base'):
     triangles = [
       np.array(
@@ -89,63 +155,11 @@ class fig_base(base):
         dtype=np.float32) 
       for triangle in otherFigure.get_triangles()]
     
-    epsilon = 0.05
 
     for otherTriangle in other_triangles:
         for triangle in triangles:
-          n2 = self.__n_param(otherTriangle)
-          d2 = self.__d_param(n2, otherTriangle)
-
-          if self.__check_plane_overlap(d2, n2, triangle) is False:
-              continue
-
-          n1 = self.__n_param(triangle)
-          d1 = self.__d_param(n1, triangle)
-          if self.__check_plane_overlap(d1, n1, otherTriangle) is False:
-              continue
-          
-          dv10 = np.dot(n2, triangle[0]) + d2
-          dv11 = np.dot(n2, triangle[1]) + d2
-          dv12 = np.dot(n2, triangle[2]) + d2
-
-          dv20 = np.dot(n1, otherTriangle[0]) + d1
-          dv21 = np.dot(n1, otherTriangle[1]) + d1
-          dv22 = np.dot(n1, otherTriangle[2]) + d1
-
-          if dv10 < epsilon:
-            dv10 = 0
-          if dv11 < epsilon:
-            dv11 = 0
-          if dv12 < epsilon:
-            dv12 = 0
-          if dv20 < epsilon:
-            dv20 = 0
-          if dv21 < epsilon:
-            dv21 = 0
-          if dv22 < epsilon:
-            dv22 = 0
-        
-          if dv10 == dv11 == dv12 == 0:
-            if self.__2d_collisionCheck(triangle, otherTriangle):
-              return True
-            continue
-
-          D = np.cross(n1, n2)
-          p10 = self.__get_p_param(triangle[0], D)
-          p11 = self.__get_p_param(triangle[1], D)
-          p12 = self.__get_p_param(triangle[2], D)
-          p20 = self.__get_p_param(otherTriangle[0], D)
-          p21 = self.__get_p_param(otherTriangle[1], D)
-          p22 = self.__get_p_param(otherTriangle[2], D)
-
-          t11 = p10 + (p11 - p10) * dv10 / (dv10 - dv11)
-          t12 = p11 + (p12 - p11) * dv11 / (dv11 - dv12)
-
-          t21 = p20 + (p21 - p20) * dv20 / (dv20 - dv21)
-          t22 = p21 + (p22 - p21) * dv21 / (dv21 - dv22)
-          if t11 < t21 < t12 or t11 < t22 < t12 or t21 < t11 < t22 or t21 < t12 < t22 \
-              or t11 > t21 > t12 or t11 > t22 > t12 or t21 > t11 > t22 or t21 > t12 > t22:
-              return True
+          if self.check_triangle_collision(triangle, otherTriangle):
+            return True
     return False
 
   def __get_p_param(self, vertex, D):

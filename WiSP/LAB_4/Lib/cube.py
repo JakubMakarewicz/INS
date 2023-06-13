@@ -7,31 +7,40 @@ from Lib.rectangle import rectangle
 from Lib.fig_base import fig_base
 
 class cube(fig_base):
-  walls = [] 
-
+  walls = []
+  vertices = []
+  
   def __init__(self,x,y,z,a,b,c, color,posx,posy,posz):
-    vertices = np.array([
-      (x+0,y+0,z+0), 
-      (x+a,y+0,z+0),
-      (x+a,y+b,z+0),
-      (x+0,y+b,z+0),
-      (x+0,y+0,z+c),
-      (x+a,y+0,z+c),
-      (x+a,y+b,z+c),
-      (x+0,y+b,z+c) 
+    self.vertices = np.array([
+      (x-a/2,y-b/2,z-c/2), 
+      (x+a/2,y-b/2,z-c/2),
+      (x+a/2,y+b/2,z-c/2),
+      (x-a/2,y+b/2,z-c/2),
+      (x-a/2,y-b/2,z+c/2),
+      (x+a/2,y-b/2,z+c/2),
+      (x+a/2,y+b/2,z+c/2),
+      (x-a/2,y+b/2,z+c/2) 
     ])
     self.poz = [posx,posy,posz]
-
-    self.walls = [
-      rectangle(*vertices[[0,1,2,3]], color),
-      rectangle(*vertices[[1,5,6,2]], color),
-      rectangle(*vertices[[2,6,7,3]], color),
-      rectangle(*vertices[[0,4,7,3]], color),
-      rectangle(*vertices[[0,1,5,4]], color),
-      rectangle(*vertices[[4,5,6,7]], color)
-    ]
+    self.color = color
+    self.init_color = color
 
   def draw(self):
+    vertices_rotated = np.array([
+      np.dot(self.get_rotation(), np.array(vertex, dtype=np.float32))[0]
+        + self.get_pos()
+      for vertex in self.vertices
+    ])
+    print(vertices_rotated)
+
+    self.walls = [
+      rectangle(*vertices_rotated[[0,1,2,3]], self.color),
+      rectangle(*vertices_rotated[[1,5,6,2]], self.color),
+      rectangle(*vertices_rotated[[2,6,7,3]], self.color),
+      rectangle(*vertices_rotated[[0,4,7,3]], self.color),
+      rectangle(*vertices_rotated[[0,1,5,4]], self.color),
+      rectangle(*vertices_rotated[[4,5,6,7]], self.color)
+    ]
     for wall in self.walls:
       wall.draw()
 

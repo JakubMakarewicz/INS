@@ -4,6 +4,7 @@ import sys
 import time
 import numpy as np
 
+import random
 from shader import *
 import vectorOperations as vo
 from Lib.cone import cone
@@ -14,6 +15,7 @@ from Lib.sphere import sphere
 from Lib.regular_fig import regular_fig
 from Lib.triangles import triangles
 from Lib.fig_base import fig_base
+from Lib.triangle import triangle
 from camera import *
 
 class WindowState:
@@ -205,7 +207,7 @@ class Window_glfw:
          if action == glfw.PRESS and key == glfw.KEY_LEFT:
             self.currently_selected = max(-1, self.currently_selected - 1)
          if action == glfw.PRESS and key == glfw.KEY_RIGHT:
-            self.currently_selected = min ([-1,len(self.figs)][len(self.figs)>0], self.currently_selected + 1)
+            self.currently_selected = min ([-1,len(self.figs)-1][len(self.figs)>0], self.currently_selected + 1)
          print(self.currently_selected)
          if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
             glfw.set_window_should_close(self.window, glfw.TRUE)
@@ -248,9 +250,10 @@ class Window_glfw:
       # self.figs.append(triangles(filename,0,0,0))
 
       if fignum==1:
-         self.figs.append(cube(0.4, 0.4, 0.4, 1, 1, 1, (1, 0, 1), 0,0,0))
+         self.figs.append(cube(0, 0, 0, 1, 1, 1, (random.uniform(0,1),random.uniform(0,1),random.uniform(0,1)), 0,0,0))
       elif fignum==2:
-         self.figs.append(cone(-.4,-.4,0,1,1, (0,0,1),40, 3+(len(self.figs) - 1) * 3, 0, 0))
+         self.figs.append(triangle([-0.5,-0.5,0],[0.5,-0.5,0],[0,0.5,0], (random.uniform(0,1),random.uniform(0,1),random.uniform(0,1))))
+         # self.figs.append(cone(-.4,-.4,0,1,1, (0,0,1),40, 3+(len(self.figs) - 1) * 3, 0, 0))
       elif fignum == 3:
          self.figs.append(sphere(0, 0, 0, 1, 2, 5, (0, 0, 1),3+(len(self.figs) - 1) * 3, 1, 0))
       elif fignum == 4:
@@ -293,10 +296,10 @@ class Window_glfw:
                     collision_matrix[j][i] = True
 
          for i, fig in enumerate(self.figs):
-            gl.glUniform3f(self.matrixLocationId, *fig.poz)
-            gl.glUniform3f(self.rotationLocationId, *fig.rotation)
-            # gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
-            # gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
+            # gl.glUniform3f(self.rotationLocationId, *fig.rotation)
+            # gl.glUniform3f(self.matrixLocationId, *fig.poz)
+            gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
+            gl.glUniform3f(self.matrixLocationId, *[0.,0.,0.])
             fig.handle_collision(any(collision_matrix[i]))
             fig.draw()
          # end draw
